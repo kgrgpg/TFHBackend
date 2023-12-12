@@ -1,12 +1,21 @@
 import { from, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TreeNode } from './TreeNode';
+import { queueScheduler } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export class MerkleTree {
     root: TreeNode | null;
 
     constructor(leaves: string[]) {
-        const leafNodes = leaves.map(data => new TreeNode(null, null, data));
+        // The first leaf node index in a complete binary tree
+        // will be at the position where the last level starts.
+        // For 'n' leaves, it starts at 2^(depth-1) - 1, where depth = log2(n) rounded up
+        const depth = Math.ceil(Math.log2(leaves.length + 1));
+        const firstLeafIndex = Math.pow(2, depth - 1) - 1;
+        const leafNodes = leaves.map((data, index) => 
+            new TreeNode(null, null, data, firstLeafIndex + index));
+
         this.root = this.buildTree(leafNodes);
     }
 
@@ -15,17 +24,24 @@ export class MerkleTree {
             return nodes[0];
         }
 
-        const pairs = [];
+        const parentNodes = [];
         for (let i = 0; i < nodes.length; i += 2) {
-            pairs.push({ left: nodes[i], right: i + 1 < nodes.length ? nodes[i + 1] : null });
-        }
+            const left = nodes[i];
+            const right = i + 1 < nodes.length ? nodes[i + 1] : null;
 
-        const parentNodes = pairs.map(pair => {
-            const parentNode = new TreeNode(pair.left, pair.right);
+            // Calculate parent node's index
+            const parentNodeIndex = Math.floor((left.index - 1) / 2);
+            const parentNode = new TreeNode(left, right, '', parentNodeIndex);
 
-            // Assuming both left and right nodes have a hash observable property
-            const leftHashObservable = pair.left.hash.asObservable();
-            const rightHashObservable = pair.right ? pair.right.hash.asObservable() : from([null]);
+            if (left) {
+                left.index = 2 * parentNodeIndex + 1;
+            }
+            if (right) {
+                right.index = 2 * parentNodeIndex + 2;
+            }
+            // Logic to update the hash...
+            const leftHashObservable = left.hash.asObservable();
+            const rightHashObservable = right ? right.hash.asObservable() : from([null]);
 
             zip(leftHashObservable, rightHashObservable).pipe(
                 map(([leftHash, rightHash]) => {
@@ -33,9 +49,34 @@ export class MerkleTree {
                 })
             ).subscribe();
 
-            return parentNode;
-        });
+            parentNodes.push(parentNode);
+        }
 
         return this.buildTree(parentNodes);
+    }
+
+    getAllNodes(): Observable<TreeNode> {
+        return new Observable<TreeNode>(subscriber => {
+            if (!this.root) {
+                subscriber.complete();
+                return;
+            }
+
+            const queue: TreeNode[] = [this.root];
+            queueScheduler.schedule(function() {
+                if (queue.length === 0) {
+                    subscriber.complete();
+                } else {
+                    const node = queue.shift();
+                    if(node)
+                    {
+                        subscriber.next(node);
+                        if (node.left) queue.push(node.left);
+                        if (node.right) queue.push(node.right);
+                        this.schedule();
+                    }
+                }
+            });
+        });
     }
 }
