@@ -41,3 +41,24 @@ For this project, static binary merkle tree implemention is prioritized instead 
 </details>
 
 In summary, while a static and dynamic binary Merkle tree share fundamental characteristics, making the tree dynamic introduces significant complexity and requires additional code and architectural considerations. The amount of additional work will depend on the specific requirements of your implementation, such as how often the tree is updated, the size of the tree, and the required performance characteristics.
+
+
+### Reactive Extensions (Rx) Usage
+
+This project uses Reactive Extensions as one of the important components in its architecture.
+Even though we have chosen to implement the static binary merkle tree, it can lay the foundation of migrating this codebase to dynamic merkle tree with later iterations if required.
+
+<details>
+<summary>When considering the implementation of a binary Merkle tree with Reactive Extensions (Rx), the relevance and differences between a static and dynamic tree are important to understand:</summary>
+
+1. **Static Merkle Tree Implementation:**
+   - **Relevance of Rx:** In a static Merkle tree, where the structure and data do not change after initialization, the use of Rx might be limited. Reactive programming shines in scenarios where there's a need to react to changes, handle streams of data, or manage asynchronous tasks.
+   - **Potential Use Cases:** Even in a static tree, Rx might be useful for the initial construction, especially if the tree is built from a stream of data inputs or in an asynchronous context. However, once the tree is built, Rx's advantages are less pronounced.
+
+2. **Dynamic Merkle Tree Implementation:**
+   - **Relevance of Rx:** A dynamic Merkle tree, where nodes can be added, removed, or modified, aligns more closely with the strengths of Rx. Rx can effectively handle events such as node changes, and updates to the tree's structure.
+   - **Event-Driven Nature:** With a dynamic tree, Rx can be used to create a responsive system that updates the tree's hashes and rebalances itself in response to changes in real-time. Rx's ability to handle asynchronous and event-driven operations makes it well-suited for this.
+   - **Concurrency and Error Handling:** Rx provides robust tools for concurrency management and error handling, which are essential in a dynamic environment where multiple operations might occur simultaneously.
+
+In summary, while Reactive Extensions can be applied to both static and dynamic binary Merkle tree implementations, their advantages are more pronounced in a dynamic context. For a static tree, unless the construction process itself is asynchronous or based on a data stream, the benefits of Rx might not justify its complexity. In contrast, a dynamic tree can leverage Rx's full potential for handling real-time updates, asynchronous processing, and event-driven architecture.
+</details>
