@@ -1,5 +1,6 @@
 import { sha3_256 } from 'js-sha3';
 import { BehaviorSubject } from 'rxjs';
+import { DynamoTreeNode } from './utils/dynamoDbOperations';
 
 export class TreeNode {
     left: TreeNode | null;
@@ -22,5 +23,15 @@ export class TreeNode {
 
     printTreeNode(){
         console.log("Left: " + this.left + " Right: " + this.right + " Hash: " + this.hash + " Index: " + this.index);
+    }
+
+    // Simple function to convert a TreeNode to a DynamoTreeNode
+    toDynamoNode(): DynamoTreeNode {
+        return {
+            index: this.index,
+            leftIndex: this.left ? this.left.index : null,
+            rightIndex: this.right ? this.right.index : null,
+            hash: this.hash.value,
+        };
     }
 }

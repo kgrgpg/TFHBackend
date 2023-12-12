@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 import { TreeNode } from './TreeNode';
 import { queueScheduler } from 'rxjs';
 import { Observable } from 'rxjs';
+import { saveNode } from './utils/dynamoDbOperations';
 
 export class MerkleTree {
     root: TreeNode | null;
@@ -15,11 +16,16 @@ export class MerkleTree {
         const firstLeafIndex = Math.pow(2, depth - 1) - 1;
         const leafNodes = leaves.map((data, index) => 
             new TreeNode(null, null, data, firstLeafIndex + index));
-
+        
+        // Save all leaf nodes to DynamoDB
+        leafNodes.forEach(leaf => saveNode(leaf.toDynamoNode()).subscribe({
+            error: (err) => console.error('Error saving leaf node:', err)
+        }));
         this.root = this.buildTree(leafNodes);
     }
 
     private buildTree(nodes: TreeNode[]): TreeNode | null {
+        // If there is only one node, it is the root node
         if (nodes.length === 1) {
             return nodes[0];
         }
@@ -49,6 +55,10 @@ export class MerkleTree {
                 })
             ).subscribe();
 
+            // Save to DynamoDB while iterating here itself
+            saveNode(parentNode.toDynamoNode()).subscribe({
+                error: (err) => console.error('Error saving intermediate node:', err)
+            });
             parentNodes.push(parentNode);
         }
 
