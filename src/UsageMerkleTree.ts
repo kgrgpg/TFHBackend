@@ -9,6 +9,9 @@ merkleTree.root?.hash.subscribe(hash => {
 
     // Using RxJS to print all tree nodes
     merkleTree.getAllNodes().pipe(
-        tap(node => console.log(`Node Index: ${node.index}, Hash: ${node.hash.value}`))
+        tap(node => {
+            const content = node.isLeaf() ? `Data: ${node.data}` : `Hash: ${node.hash.value}`;
+            console.log(`Node Index: ${node.index}, ${content}`);
+        })
     ).subscribe();
 });

@@ -6,12 +6,14 @@ export class TreeNode {
     left: TreeNode | null;
     right: TreeNode | null;
     hash: BehaviorSubject<string>;
+    data: string | null;
     index: number;
 
     constructor(left: TreeNode | null, right: TreeNode | null, data: string = '', index: number) {
         this.left = left;
         this.right = right;
         this.hash = new BehaviorSubject(sha3_256(data));
+        this.data = data;
         this.index = index;
     }
 
@@ -32,6 +34,12 @@ export class TreeNode {
             leftIndex: this.left ? this.left.index : null,
             rightIndex: this.right ? this.right.index : null,
             hash: this.hash.value,
+            data: this.data,
         };
+    }
+
+    // Simple function to check if a TreeNode is a leaf node
+    isLeaf() {
+        return !this.left && !this.right;
     }
 }

@@ -15,6 +15,7 @@ export interface DynamoTreeNode {
     leftIndex: number | null;  // Index of the left child
     rightIndex: number | null; // Index of the right child
     hash: string;
+    data: string | null;             // Data of the node (only for leaf nodes)
 }
 
 // Function to save a node, returning an observable
@@ -48,17 +49,6 @@ export function getNode(index: number): Observable<DynamoTreeNode | null> {
         })
     );
 }
-
-// Example usage
-const exampleNode: DynamoTreeNode = {
-    index: 1,
-    leftIndex: 0,
-    rightIndex: 2,
-    hash: 'some-hash-value'
-};
-
-// Save the node
-saveNode(exampleNode).subscribe();
 
 // Retrieve the node
 getNode(1).subscribe(node => {
