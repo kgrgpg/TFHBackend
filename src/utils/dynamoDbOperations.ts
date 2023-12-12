@@ -2,11 +2,8 @@ import * as AWS from 'aws-sdk';
 import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-/*
- * Since CDK is used to provision the infrastructure, you don't need to include AWS configuration 
- * (AWS.config.update) in this part of your application. AWS SDK will automatically use the configuration 
- * and credentials defined by the CDK environment.
- */
+
+AWS.config.update({ region: 'eu-central-1' });
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
