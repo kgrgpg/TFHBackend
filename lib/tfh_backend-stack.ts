@@ -1,14 +1,20 @@
 import * as cdk from 'aws-cdk-lib';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 
 export class TfhBackendStack extends cdk.Stack {
+  public readonly CDKMerkleTreeTable: dynamodb.Table;
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    new s3.Bucket(this, 'MyFirstBucket', {
-      versioned: true
+    console.log('Creating DynamoDB table for Merkle Tree Nodes...');
+    // Define the DynamoDB table for Merkle Tree Nodes
+    this.CDKMerkleTreeTable = new dynamodb.Table(this, 'CDKMerkleTreeTable', {
+      partitionKey: { name: 'index', type: dynamodb.AttributeType.NUMBER },
+      tableName: 'MerkleTreeNodes',
+      // other configurations like billing mode, encryption, etc.
     });
+    console.log('DynamoDB table for Merkle Tree Nodes created.');
   }
 }
