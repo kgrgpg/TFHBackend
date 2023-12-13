@@ -1,6 +1,7 @@
 import * as AWS from 'aws-sdk';
+import { DynamoDB } from 'aws-sdk';
 import { from, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap, toArray } from 'rxjs/operators';
 
 
 AWS.config.update({ region: 'eu-central-1' }); // Configure AWS SDK
@@ -47,5 +48,55 @@ export function getNode(index: number): Observable<DynamoTreeNode | null> {
             console.error('Error retrieving node:', error);
             return [null]; // or throw error
         })
+    );
+}
+
+// Function to list all items in the table and return an observable
+function listAllItems(): Observable<DynamoDB.DocumentClient.AttributeMap[]> {
+    const params: DynamoDB.DocumentClient.ScanInput = {
+        TableName: TABLE_NAME,
+    };
+
+    return from(dynamoDb.scan(params).promise()).pipe(
+        switchMap(result => {
+            const items = result.Items || [];
+            if (result.LastEvaluatedKey) {
+                return listAllItems().pipe(
+                    map(moreItems => items.concat(moreItems))
+                );
+            } else {
+                return [items];
+            }
+        }),
+        catchError(error => {
+            console.error('Error listing items:', error);
+            return [[]]; // Return empty array in case of error
+        })
+    );
+}
+
+// Function to delete an item and return an observable
+function deleteItem(index: number): Observable<void> {
+    const params: DynamoDB.DocumentClient.DeleteItemInput = {
+        TableName: TABLE_NAME,
+        Key: { index },
+    };
+
+    return from(dynamoDb.delete(params).promise()).pipe(
+        map(() => console.log(`Deleted item with index: ${index}`)),
+        catchError(error => {
+            console.error('Error deleting item:', error);
+            throw error;
+        })
+    );
+}
+
+// Function to delete all items in the table
+export function deleteAllItems(): Observable<void> {
+    return listAllItems().pipe(
+        switchMap(items => from(items)),
+        switchMap(item => deleteItem(item.index)),
+        toArray(),
+        map(() => console.log('All items deleted'))
     );
 }

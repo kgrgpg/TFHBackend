@@ -3,26 +3,34 @@ import { map } from 'rxjs/operators';
 import { TreeNode } from './TreeNode';
 import { queueScheduler } from 'rxjs';
 import { Observable } from 'rxjs';
-import { saveNode } from './services/dynamoDbOperations';
+import { deleteAllItems, saveNode } from './services/dynamoDbOperations';
 
 // MerkleTree class to represent a binary Merkle tree
 export class MerkleTree {
     root: TreeNode | null;
 
     constructor(leaves: string[]) {
-        // The first leaf node index in a complete binary tree
-        // will be at the position where the last level starts.
-        // For 'n' leaves, it starts at 2^(depth-1) - 1, where depth = log2(n) rounded up
-        const depth = Math.ceil(Math.log2(leaves.length + 1));
-        const firstLeafIndex = Math.pow(2, depth - 1) - 1;
-        const leafNodes = leaves.map((data, index) => 
-            new TreeNode(null, null, data, firstLeafIndex + index));
-        
-        // Save all leaf nodes to DynamoDB
-        leafNodes.forEach(leaf => saveNode(leaf.toDynamoNode()).subscribe({
-            error: (err) => console.error('Error saving leaf node:', err)
-        }));
-        this.root = this.buildTree(leafNodes);
+        // Delete all the previous items stored in DynamoDB from previously created trees
+        // Note that this might not be scalable if tree sizes are very large
+        // For those scenarios, other strategies are discussed in README file under Architecture section
+        deleteAllItems().subscribe({
+            next: () => {
+                // The first leaf node index in a complete binary tree
+                // will be at the position where the last level starts.
+                // For 'n' leaves, it starts at 2^(depth-1) - 1, where depth = log2(n) rounded up
+                const depth = Math.ceil(Math.log2(leaves.length + 1));
+                const firstLeafIndex = Math.pow(2, depth - 1) - 1;
+                const leafNodes = leaves.map((data, index) => 
+                new TreeNode(null, null, data, firstLeafIndex + index));
+
+                // Save all leaf nodes to DynamoDB
+                leafNodes.forEach(leaf => saveNode(leaf.toDynamoNode()).subscribe({
+                    error: (err) => console.error('Error saving leaf node:', err)
+                }));
+                this.root = this.buildTree(leafNodes);
+            },
+            error: (err) => console.error('Error deleting previous items:', err)
+        });
     }
 
     // Private method to recursively build the tree from leaf nodes
