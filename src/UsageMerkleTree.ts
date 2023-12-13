@@ -20,7 +20,8 @@ merkleTree.root?.hash.subscribe(hash => {
 });
 
 // Retrieve the node from DynamoDB
-getNode(1).subscribe(node => {
+const index = 1; //Enter the index of required node to be retrieved
+getNode(index).subscribe(node => {
     if (node) {
         console.log('Reading from DynamoDb');
         console.log(node);
