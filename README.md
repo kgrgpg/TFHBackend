@@ -153,4 +153,4 @@ In summary, while Reactive Extensions may not directly influence the core logic 
 
 #### Conclusion
 
-Your implementation strategy, using DynamoDB for storage and Lambda for on-demand retrieval, is a practical and efficient approach that aligns with the assignment's flexibility in handling the Merkle tree. It offers scalability, efficiency, and aligns with cloud-native development practices. While it differs from loading the entire tree into memory, it effectively addresses the challenge's objectives.
+Using DynamoDB for storage and Lambda for on-demand retrieval, is a practical and efficient approach that aligns with the assignment's flexibility in handling the Merkle tree. It offers scalability, efficiency, and aligns with cloud-native development practices. While it differs from loading the entire tree into memory, it effectively addresses the challenge's objectives.
