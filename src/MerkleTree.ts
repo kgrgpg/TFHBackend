@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { TreeNode } from './TreeNode';
 import { queueScheduler } from 'rxjs';
 import { Observable } from 'rxjs';
-import { saveNode } from './utils/dynamoDbOperations';
+import { saveNode } from './services/dynamoDbOperations';
 
 export class MerkleTree {
     root: TreeNode | null;

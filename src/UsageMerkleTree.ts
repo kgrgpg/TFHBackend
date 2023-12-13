@@ -4,6 +4,7 @@ import { tap } from 'rxjs/operators';
 const leaves = ['data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data8'];
 const merkleTree = new MerkleTree(leaves);
 
+// This loads all the nodes from the local memory
 merkleTree.root?.hash.subscribe(hash => {
     console.log('Root Hash:', hash);
 

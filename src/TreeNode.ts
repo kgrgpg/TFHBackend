@@ -1,6 +1,6 @@
 import { sha3_256 } from 'js-sha3';
 import { BehaviorSubject } from 'rxjs';
-import { DynamoTreeNode } from './utils/dynamoDbOperations';
+import { DynamoTreeNode } from './services/dynamoDbOperations';
 
 export class TreeNode {
     left: TreeNode | null;

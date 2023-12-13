@@ -147,7 +147,7 @@ In summary, while Reactive Extensions may not directly influence the core logic 
 
 2. **Statelessness:** AWS Lambda functions are stateless. Therefore, each function invocation can retrieve just the necessary data from DynamoDB without relying on a previously loaded state. This aligns well with serverless architecture principles.
 
-3. **Consistency with Assignment Flexibility:** The assignment's mention of "loading the entire tree to memory" suggests a flexibility in approach. While you're technically not loading the entire tree into memory, your approach is consistent with the goal of efficiently handling data retrieval, which is a key aspect of the challenge.
+3. **Consistency with Assignment Flexibility:** The assignment's mention of "loading the entire tree to memory" suggests a flexibility in approach. While technically not loading the entire tree into memory, the approach is consistent with the goal of efficiently handling data retrieval, which is a key aspect of the challenge.
 
 4. **Scalability and Performance:** The chosen approach (DynamoDB for storage and Lambda for retrieval) is likely more scalable and performant compared to loading the entire tree into memory, particularly for large datasets or when dealing with high request volumes.
 
