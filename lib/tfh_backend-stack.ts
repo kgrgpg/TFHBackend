@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 
+
 export class TfhBackendStack extends cdk.Stack {
   public readonly CDKMerkleTreeTable: dynamodb.Table;
   public readonly merkleTreeLambda: lambda.Function;
@@ -25,7 +26,7 @@ export class TfhBackendStack extends cdk.Stack {
       functionName: 'MerkleTreeLambdaFunction',
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: 'retrieveNodeLambda.handler', 
-      code: lambda.Code.fromAsset('./src/services'), 
+      code: lambda.Code.fromAsset('./dist'), 
       environment: {
         TABLE_NAME: this.CDKMerkleTreeTable.tableName,
       },

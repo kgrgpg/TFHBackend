@@ -11,7 +11,7 @@ const lambda = new AWS.Lambda();
 // Parameters for the Lambda invocation
 const params: AWS.Lambda.InvocationRequest = {
     FunctionName: 'MerkleTreeLambdaFunction', // Name as declared in CDK code
-    Payload: JSON.stringify({ queryStringParameters: { index: '1' } }),
+    Payload: JSON.stringify({ queryStringParameters: { index: '8' } }),
 };
 
 // Convert the Lambda invocation to an Observable
