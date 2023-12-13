@@ -154,3 +154,55 @@ In summary, while Reactive Extensions may not directly influence the core logic 
 #### Conclusion
 
 Using DynamoDB for storage and Lambda for on-demand retrieval, is a practical and efficient approach that aligns with the assignment's flexibility in handling the Merkle tree. It offers scalability, efficiency, and aligns with cloud-native development practices. While it differs from loading the entire tree into memory, it effectively addresses the challenge's objectives.
+
+## Calculating Depth and Offset in a Binary Merkle Tree
+
+Given just the index of a node in a binary Merkle tree, it is possible to calculate the depth and offset of the node. Here's how you can do it:
+
+### Depth Calculation
+
+- The depth of a node in a binary tree is the number of edges from the node to the tree's root node.
+- In a complete binary tree, all levels except possibly the last are completely filled, and all nodes are as far left as possible.
+- You can calculate the depth by finding the greatest integer `d` where `2^d <= index + 1`. This is because in a complete binary tree, a node at index `i` (0-indexed) will be at a depth where the total number of nodes in all upper levels is less than or equal to `i`.
+
+### Offset Calculation
+
+- The offset of a node at a particular depth is its position relative to the leftmost node at that depth.
+- To find the offset, you can subtract the total number of nodes in all previous levels from the index. The formula for the total number of nodes up to depth `d` in a complete binary tree is `2^d - 1`. 
+- So, the offset can be calculated as `index - (2^depth - 1)`.
+
+## Decision: Storing Depth and Offset in DynamoDB vs Calculating on the Fly
+
+When deciding whether to calculate the depth and offset on the fly or store them as properties in each tree node in DynamoDB for a binary Merkle tree, consider the following factors:
+
+### Frequency of Access
+
+- **Frequent Access**: If depth and offset are frequently needed, storing them might improve performance.
+- **Rare Usage**: If these values are seldom used, calculating them on demand could be more efficient for storage.
+
+### Performance Considerations
+
+- **Computational Load**: Calculating depth and offset is simple but could be a bottleneck in high-throughput scenarios.
+- **Storage vs. Computation**: Storing these values increases storage requirements but reduces computational load during retrieval.
+
+### Storage Costs and Optimization
+
+- **Increased Storage**: Additional properties increase the storage requirement, impacting costs in databases like DynamoDB.
+- **Optimization**: Calculating values on the fly can be cost-effective but trades off against computational efficiency.
+
+### Complexity and Maintenance
+
+- **Increased Complexity**: More properties in each node lead to increased complexity and data management.
+- **Simpler Model**: Storing fewer properties (only index, left, right, hash) simplifies the data model but may require additional computation.
+
+### Application-Specific Needs
+
+- **Real-Time Performance**: If real-time response is critical, pre-storing depth and offset might be beneficial.
+- **Storage Limits and Cost Sensitivity**: If there are strict limits on storage or cost, calculating on demand is preferable.
+
+**Recommendation**:
+
+- **Store Values**: If depth and offset are used frequently or if quick response time is critical.
+- **Calculate on Demand**: If storage optimization is important and depth and offset are not accessed frequently.
+
+The decision should be based on balancing storage efficiency, computational load, and the specific needs of your application. Performance testing in your specific scenario may also provide insights for the best approach.
