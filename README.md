@@ -79,7 +79,7 @@ Before you begin, ensure you have met the following requirements:
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
-## Troubleshooting Guide
+### Troubleshooting Guide
 
 * Deployment Issues: If you encounter issues during deployment with CDK, ensure that your AWS CLI is configured correctly and that you have the necessary permissions in your AWS account.
 
