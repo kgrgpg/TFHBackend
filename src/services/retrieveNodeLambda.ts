@@ -6,9 +6,12 @@ import { map, catchError } from 'rxjs/operators';
 const dynamoDb = new DynamoDB.DocumentClient();
 const TABLE_NAME = 'MerkleTreeNodes';
 
+// Lambda handler to retrieve a node by index
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    // Extract index from query parameters
     const index = parseInt(event.queryStringParameters?.index ?? '0');
 
+    // Perform DynamoDB operation to retrieve node
     const response$ = from(dynamoDb.get({
         TableName: TABLE_NAME,
         Key: { index },
@@ -22,9 +25,14 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
                 };
             }
 
+            // Calculate depth and offset
+            // Note that if there are too many calls to the functions,
+            // Then it might be better to store depth and offset in DynamoDb itself
+            // Check README Architecture for details
             const depth = Math.floor(Math.log2(index + 1));
             const offset = index - Math.pow(2, depth) + 1;
 
+            // Return formatted resonse
             return {
                 statusCode: 200,
                 body: JSON.stringify({

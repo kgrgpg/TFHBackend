@@ -5,6 +5,7 @@ import { queueScheduler } from 'rxjs';
 import { Observable } from 'rxjs';
 import { saveNode } from './services/dynamoDbOperations';
 
+// MerkleTree class to represent a binary Merkle tree
 export class MerkleTree {
     root: TreeNode | null;
 
@@ -24,6 +25,7 @@ export class MerkleTree {
         this.root = this.buildTree(leafNodes);
     }
 
+    // Private method to recursively build the tree from leaf nodes
     private buildTree(nodes: TreeNode[]): TreeNode | null {
         // If there is only one node, it is the root node
         if (nodes.length === 1) {
@@ -65,6 +67,7 @@ export class MerkleTree {
         return this.buildTree(parentNodes);
     }
 
+    // Method to retrieve all nodes in the tree as an Observable
     getAllNodes(): Observable<TreeNode> {
         return new Observable<TreeNode>(subscriber => {
             if (!this.root) {

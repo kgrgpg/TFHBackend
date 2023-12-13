@@ -2,10 +2,11 @@ import { sha3_256 } from 'js-sha3';
 import { BehaviorSubject } from 'rxjs';
 import { DynamoTreeNode } from './services/dynamoDbOperations';
 
+// TreeNode class represents a node in a Merkle Tree
 export class TreeNode {
     left: TreeNode | null;
     right: TreeNode | null;
-    hash: BehaviorSubject<string>;
+    hash: BehaviorSubject<string>; // Reactive variable to store node's hash
     data: string | null;
     index: number;
 
@@ -17,6 +18,7 @@ export class TreeNode {
         this.index = index;
     }
 
+    // Method to update the hash based on children's hashes
     updateHash() {
         const leftHash = this.left?.hash.value || '';
         const rightHash = this.right?.hash.value || '';

@@ -3,11 +3,11 @@ import { from, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 
-AWS.config.update({ region: 'eu-central-1' });
+AWS.config.update({ region: 'eu-central-1' }); // Configure AWS SDK
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-const TABLE_NAME = 'MerkleTreeNodes';
+const TABLE_NAME = 'MerkleTreeNodes'; // DynamoDB table name
 
 // DynamoTreeNode interface
 export interface DynamoTreeNode {
@@ -15,7 +15,7 @@ export interface DynamoTreeNode {
     leftIndex: number | null;  // Index of the left child
     rightIndex: number | null; // Index of the right child
     hash: string;
-    data: string | null;             // Data of the node (only for leaf nodes)
+    data: string | null; // Data of the node (only for leaf nodes)
 }
 
 // Function to save a node, returning an observable
