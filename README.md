@@ -49,7 +49,7 @@ This project uses Reactive Extensions as one of the important components in its 
 Even though we have chosen to implement the static binary merkle tree, it can lay the foundation of migrating this codebase to dynamic merkle tree with later iterations if required.
 
 <details>
-<summary><i>(Click to expand)When considering the implementation of a binary Merkle tree with Reactive Extensions (Rx), the relevance and differences between a static and dynamic tree are important to understand:</i></summary>
+<summary><i>(Click to expand) When considering the implementation of a binary Merkle tree with Reactive Extensions (Rx), the relevance and differences between a static and dynamic tree are important to understand:</i></summary>
 
 1. **Static Merkle Tree Implementation:**
    - **Relevance of Rx:** In a static Merkle tree, where the structure and data do not change after initialization, the use of Rx might be limited. Reactive programming shines in scenarios where there's a need to react to changes, handle streams of data, or manage asynchronous tasks.
@@ -82,3 +82,54 @@ Reactive Extensions are also relevant to the additional functionalities of node 
 In summary, while Reactive Extensions may not directly influence the core logic of building and managing a Merkle tree, they can significantly enhance the performance, responsiveness, and robustness of the functionalities surrounding node retrieval and API interaction. Rx's ability to handle asynchronous operations, manage data streams, and provide sophisticated error handling makes it a powerful tool
 
 </details>
+
+### Storage Options for Binary Merkle Tree in AWS
+#### Amazon DynamoDB
+- **Pros**:
+  - Fully-managed NoSQL database, ideal for flexible data models.
+  - Fast performance with single-digit millisecond response times.
+  - Automatic scaling for large data and traffic.
+  - AWS Lambda integration for serverless architectures.
+- **Cons**:
+  - Requires NoSQL design pattern knowledge.
+  - Potentially expensive for write-heavy applications.
+- **Suitability for Merkle Tree**:
+  - Great for fast, consistent access to tree nodes.
+  - Limited complex querying compared to SQL databases.
+
+#### Amazon Redis (ElastiCache)
+- **Pros**:
+  - In-memory data store with low latency, perfect for real-time access.
+  - Supports complex data structures, beneficial for tree structures.
+  - Scalable and high-performance.
+- **Cons**:
+  - Expensive for large data sets (in-memory storage).
+  - Persistence requires additional configuration.
+- **Suitability for Merkle Tree**:
+  - Ideal for high-performance applications needing in-memory access.
+  - Needs extra persistence setup.
+
+#### Amazon S3
+- **Pros**:
+  - Durable, scalable, and secure object storage.
+  - Ideal for large unstructured data.
+  - Cost-effective and integrates well with AWS services.
+- **Cons**:
+  - Not suited for transactional data or fast access needs.
+  - Better for static files than dynamic data.
+- **Suitability for Merkle Tree**:
+  - Good for infrequently changing trees and cost-effective storage.
+
+#### Amazon RDS
+- **Pros**:
+  - Supports various database engines (MySQL, PostgreSQL, etc.).
+  - Automated backups, patching, and scalability.
+- **Cons**:
+  - More complex than NoSQL solutions.
+  - Potentially higher cost for high throughput.
+- **Suitability for Merkle Tree**:
+  - Good for complex querying or existing SQL expertise.
+
+#### Recommendation:
+- **DynamoDB** for scalability, performance, and AWS integration.
+- **Redis** for high-speed access
