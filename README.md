@@ -1,4 +1,4 @@
-# Welcome to your CDK TypeScript project
+# Welcome to TFH Binary Merkle Tree assignment project
 
 This is a blank project for CDK development with TypeScript.
 
@@ -133,3 +133,24 @@ In summary, while Reactive Extensions may not directly influence the core logic 
 #### Recommendation:
 - **DynamoDB** for scalability, performance, and AWS integration.
 - **Redis** for high-speed access
+
+## DynamoDb and AWS Lambda for storage and node retrieval
+
+#### Using DynamoDB for Storage
+
+- **Distributed Storage:** Storing the binary Merkle tree in DynamoDB means the tree is distributed across a database, not stored in-memory in its entirety.
+- **Selective Loading:** When you retrieve a node using a Lambda function, you're only loading the specific node's data (its depth, offset, and value) into memory, not the entire tree.
+
+#### Implications of the Approach
+
+1. **Efficient Retrieval:** By storing the tree in DynamoDB and retrieving nodes on-demand via Lambda, you achieve efficient and scalable data access. You avoid the overhead of loading the entire tree into memory, especially beneficial for large trees.
+
+2. **Statelessness:** AWS Lambda functions are stateless. Therefore, each function invocation can retrieve just the necessary data from DynamoDB without relying on a previously loaded state. This aligns well with serverless architecture principles.
+
+3. **Consistency with Assignment Flexibility:** The assignment's mention of "loading the entire tree to memory" suggests a flexibility in approach. While you're technically not loading the entire tree into memory, your approach is consistent with the goal of efficiently handling data retrieval, which is a key aspect of the challenge.
+
+4. **Scalability and Performance:** The chosen approach (DynamoDB for storage and Lambda for retrieval) is likely more scalable and performant compared to loading the entire tree into memory, particularly for large datasets or when dealing with high request volumes.
+
+#### Conclusion
+
+Your implementation strategy, using DynamoDB for storage and Lambda for on-demand retrieval, is a practical and efficient approach that aligns with the assignment's flexibility in handling the Merkle tree. It offers scalability, efficiency, and aligns with cloud-native development practices. While it differs from loading the entire tree into memory, it effectively addresses the challenge's objectives.
