@@ -79,6 +79,15 @@ Before you begin, ensure you have met the following requirements:
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
+## Troubleshooting Guide
+
+* Deployment Issues: If you encounter issues during deployment with CDK, ensure that your AWS CLI is configured correctly and that you have the necessary permissions in your AWS account.
+
+* Runtime Errors: For any runtime errors, check the logs in AWS CloudWatch associated with your Lambda functions for detailed error messages.
+
+* Connectivity Issues: Ensure that your AWS services are in the same region and that there are no network ACLs or security groups blocking communication.
+
+* Lambda Timeouts: If Lambda functions timeout, consider increasing the timeout duration in your CDK script.
 
 
 ## Architecture
