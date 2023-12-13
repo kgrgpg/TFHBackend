@@ -2,12 +2,21 @@
 
 The pdf to the [TFH Binary Merkle Tree assignment can be found here](./App_backend__Take-home_exercise.pdf)
 
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- **Node.js**: Install Node.js (version 14.x or later) from [Node.js Downloads](https://nodejs.org/en/download/).
+- **AWS CLI**: Install the AWS Command Line Interface (CLI) following the instructions at [AWS CLI Installation](https://aws.amazon.com/cli/).
+- **AWS Account**: If you don't have an AWS account, create one at [AWS Management Console](https://aws.amazon.com/console/).
+- **AWS Configuration**: Configure AWS CLI with your credentials and default region. You can follow [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 
 ## Setting up
 
-* `npm install`     install all the necessary packages
-* `npm run build`   compile typescript to js and create dist folder
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
+1. Navigate to the project directory and run `npm install` to install the necessary Node.js packages.
+2. Ensure that your AWS CLI is configured with your AWS account credentials. Run `aws configure` and enter your `AWS Access Key ID`, `AWS Secret Access Key`, and default region.
+3. Compile typescript to js and create dist folder using `npm run build`
+4. you can deploy the application stack to your AWS account using `npx cdk deploy`.
 
 ## Running the application after setting up
 
