@@ -3,14 +3,40 @@
 The pdf to the [TFH Binary Merkle Tree assignment can be found here](./App_backend__Take-home_exercise.pdf)
 
 
-## Useful commands
+## Setting up
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
+* `npm install`     install all the necessary packages
+* `npm run build`   compile typescript to js and create dist folder
 * `npx cdk deploy`  deploy this stack to your default AWS account/region
+
+## Running the application after setting up
+
+### Creating the Binary Merkle Tree and storing it DynamoDb
+* Open src/UsageMerkleTree.ts
+* Edit `const leaves = ['data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data8'];` accordingly for the leaves
+* Save file and `npm run build`
+* `node src/UsageMerkleTree.js`
+* Check the console for log
+
+### Direct retrieval of node from the tree saved in DynamoDb
+* Open src/UsageMerkleTree.ts
+* Edit `const index = 1; //Enter the index of required node to be retrieved`
+* Save file and `npm run build`
+* `node src/UsageMerkleTree.js`
+* Check the console for log
+
+### Programmatic Retrieval of node via Lambda function invocation
+* Open src/services/invokeLambda.ts
+* Edit `Payload: JSON.stringify({ queryStringParameters: { index: '8' } }),`. Change the index to the required one
+* Save file and `npm run build`
+* `node src/services/invokeLambda.js`
+* Check the console for log
+  
+* `npm run test`    perform the jest unit tests
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
+
+
 
 ## Architecture
 
