@@ -49,11 +49,3 @@ export function getNode(index: number): Observable<DynamoTreeNode | null> {
         })
     );
 }
-
-// Retrieve the node
-getNode(1).subscribe(node => {
-    if (node) {
-        console.log('Reading from DynamoDb');
-        console.log(node);
-    }
-});
