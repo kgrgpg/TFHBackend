@@ -1,8 +1,7 @@
 # Welcome to TFH Binary Merkle Tree assignment project
 
-This is a blank project for CDK development with TypeScript.
+The pdf to the [TFH Binary Merkle Tree assignment can be found here](./App_backend__Take-home_exercise.pdf)
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Useful commands
 
