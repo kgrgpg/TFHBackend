@@ -11,7 +11,7 @@ The pdf to the [TFH Binary Merkle Tree assignment can be found here](./App_backe
 
 ## Running the application after setting up
 
-### Creating the Binary Merkle Tree and storing it DynamoDb
+### Creating the Binary Merkle Tree and storing it in DynamoDb
 * Open src/UsageMerkleTree.ts
 * Edit `const leaves = ['data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data8'];` accordingly for the leaves
 * Save file and `npm run build`
@@ -31,7 +31,41 @@ The pdf to the [TFH Binary Merkle Tree assignment can be found here](./App_backe
 * Save file and `npm run build`
 * `node src/services/invokeLambda.js`
 * Check the console for log
-  
+
+### Testing the API Gateway REST Service with Lambda Function
+
+**Deploy Your CDK Stack:**
+   - Ensure your CDK stack is deployed. Run `cdk deploy` from your project's root directory.
+   - The CDK CLI will output the URL of the deployed API Gateway after successful deployment.
+
+**Get the API Gateway URL:**
+   - Note the URL endpoint of your API Gateway provided by CDK CLI. It should look like: `https://<api-id>.execute-api.eu-central-1.amazonaws.com/prod/`.
+
+**Testing the GET Method:**
+   - Construct the URL for testing by appending the resource path (`node`) and query parameter for the index.
+   - Example for index `1`: `https://<api-id>.execute-api.eu-central-1.amazonaws.com/prod/node?index=1`.
+
+**Use a Web Browser or HTTP Client:**
+   - Enter the full URL in a web browser to send a GET request to your API Gateway.
+   - Alternatively, use an HTTP client like Postman or `curl` in the terminal.
+
+**Example `curl` Command:**
+   - To test with `curl`, use:
+     ```bash
+     curl "https://<api-id>.execute-api.eu-central-1.amazonaws.com/prod/node?index=1"
+     ```
+   - Replace `<api-id>` with your actual API ID.
+
+**Check the Response:**
+   - The response from the API will display the node details like index, depth, offset, and value/hash.
+
+**Troubleshoot if Necessary:**
+   - Check the Lambda function logs in AWS CloudWatch for debugging if you encounter issues.
+   - Ensure proper permissions for Lambda to access DynamoDB and correct setup of API Gateway integration.
+
+Remember to redeploy your CDK stack after any changes to your Lambda function or API Gateway configuration.
+
+### Additional commands 
 * `npm run test`    perform the jest unit tests
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template

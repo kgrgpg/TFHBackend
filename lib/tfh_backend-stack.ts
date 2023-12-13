@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 
 export class TfhBackendStack extends cdk.Stack {
   public readonly CDKMerkleTreeTable: dynamodb.Table;
@@ -36,6 +36,18 @@ export class TfhBackendStack extends cdk.Stack {
 
     // Grant the Lambda function read access to the DynamoDB table
     this.CDKMerkleTreeTable.grantReadData(this.merkleTreeLambda);
+
+    // Create an API Gateway REST API
+    const api = new apigateway.RestApi(this, 'MerkleTreeApi', {
+      restApiName: 'Merkle Tree Rest Api Service',
+      description: 'API for accessing Merkle Tree nodes.'
+    });
+
+    // Define a resource for Merkle Tree nodes
+    const nodeResource = api.root.addResource('node');
+
+    // Define a GET method for the /node resource
+    nodeResource.addMethod('GET', new apigateway.LambdaIntegration(this.merkleTreeLambda));
 
   }
 }
