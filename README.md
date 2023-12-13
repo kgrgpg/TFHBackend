@@ -15,7 +15,7 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Architecture
 
-### Use of Static vs Dynamic Merkle tree
+## Use of Static vs Dynamic Merkle tree
 
 For this project, static binary merkle tree implemention is prioritized instead of the dynamic one. This is due to the added complexity introduced by a dynmamic tree. Transitioning from a static to a dynamic binary Merkle tree implementation involves several additional considerations and modifications. While a static tree is initialized once and remains unchanged, a dynamic tree allows for updates, such as adding, modifying, or deleting nodes, which in turn affect the hashes and the structure of the tree. Here are the key aspects you would need to address for a dynamic implementation:
 
@@ -43,7 +43,7 @@ For this project, static binary merkle tree implemention is prioritized instead 
 In summary, while a static and dynamic binary Merkle tree share fundamental characteristics, making the tree dynamic introduces significant complexity and requires additional code and architectural considerations. The amount of additional work will depend on the specific requirements of your implementation, such as how often the tree is updated, the size of the tree, and the required performance characteristics.
 
 
-### Reactive Extensions (Rx) Usage
+## Reactive Extensions (Rx) Usage
 
 This project uses Reactive Extensions as one of the important components in its architecture.
 Even though we have chosen to implement the static binary merkle tree, it can lay the foundation of migrating this codebase to dynamic merkle tree with later iterations if required.
@@ -83,7 +83,7 @@ In summary, while Reactive Extensions may not directly influence the core logic 
 
 </details>
 
-### Storage Options for Binary Merkle Tree in AWS
+## Storage Options for Binary Merkle Tree in AWS
 #### Amazon DynamoDB
 - **Pros**:
   - Fully-managed NoSQL database, ideal for flexible data models.
