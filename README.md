@@ -21,17 +21,17 @@ Before you begin, ensure you have met the following requirements:
 ## Running the application after setting up
 
 ### Creating the Binary Merkle Tree and storing it in DynamoDb
-1. Open src/UsageMerkleTree.ts
+1. Open src/CreateMerkleTree.ts
 2. Edit `const leaves = ['data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data8'];` accordingly for the leaves
 3. Save file and `npm run build`
-4. `node src/UsageMerkleTree.js`
+4. `node src/CreateMerkleTree.js`
 5. Check the console for log
 
 ### Direct retrieval of node from the tree saved in DynamoDb
-1. Open src/UsageMerkleTree.ts
+1. Open src/RetrieveNodeFromDb.ts.ts
 2. Edit `const index = 1; //Enter the index of required node to be retrieved`
 3. Save file and `npm run build`
-4. `node src/UsageMerkleTree.js`
+4. `node src/RetrieveNodeFromDb.ts.js`
 5. Check the console for log
 
 ### Programmatic Retrieval of node via Lambda function invocation
