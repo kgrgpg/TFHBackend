@@ -31,13 +31,14 @@ export class TreeNode {
 
     // Simple function to convert a TreeNode to a DynamoTreeNode
     toDynamoNode(): DynamoTreeNode {
-        return {
+        const dynamoNode = {
             index: this.index,
             leftIndex: this.left ? this.left.index : null,
             rightIndex: this.right ? this.right.index : null,
             hash: this.hash.value,
             data: this.data,
         };
+        return dynamoNode;
     }
 
     // Simple function to check if a TreeNode is a leaf node

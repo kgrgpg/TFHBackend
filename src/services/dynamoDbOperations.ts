@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk';
 import { DynamoDB } from 'aws-sdk';
+import { debug } from 'console';
 import { from, Observable } from 'rxjs';
 import { catchError, map, switchMap, toArray } from 'rxjs/operators';
 
@@ -52,7 +53,7 @@ export function getNode(index: number): Observable<DynamoTreeNode | null> {
 }
 
 // Function to list all items in the table and return an observable
-function listAllItems(): Observable<DynamoDB.DocumentClient.AttributeMap[]> {
+export function listAllItems(): Observable<DynamoDB.DocumentClient.AttributeMap[]> {
     const params: DynamoDB.DocumentClient.ScanInput = {
         TableName: TABLE_NAME,
     };
@@ -83,7 +84,9 @@ function deleteItem(index: number): Observable<void> {
     };
 
     return from(dynamoDb.delete(params).promise()).pipe(
-        map(() => console.log(`Deleted item with index: ${index}`)),
+        map(() => { 
+            // Log here if required 
+        }),
         catchError(error => {
             console.error('Error deleting item:', error);
             throw error;

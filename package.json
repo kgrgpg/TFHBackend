@@ -5,7 +5,7 @@
     "tfh_backend": "bin/tfh_backend.js"
   },
   "scripts": {
-    "clean": "rimraf ./dist && rimraf ./src/**/*.js",
+    "clean": "rimraf ./dist && rimraf ./src/**/*.js && rimraf ./src/*.js",
     "build": "npm run clean && tsc && webpack",
     "watch": "tsc -w",
     "test": "jest",

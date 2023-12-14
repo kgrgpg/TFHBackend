@@ -32,6 +32,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
             const depth = Math.floor(Math.log2(index + 1));
             const offset = index - Math.pow(2, depth) + 1;
 
+            
             // Return formatted resonse
             return {
                 statusCode: 200,
@@ -39,7 +40,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
                     index: node.index,
                     depth,
                     offset,
-                    value: node.hash,
+                    hash: node.hash,
+                    data: node.data
                 }),
             };
         }),

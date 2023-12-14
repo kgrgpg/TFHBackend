@@ -3,31 +3,55 @@ import { map } from 'rxjs/operators';
 import { TreeNode } from './TreeNode';
 import { queueScheduler } from 'rxjs';
 import { Observable } from 'rxjs';
-import { deleteAllItems, saveNode } from './services/dynamoDbOperations';
+import { deleteAllItems, listAllItems, saveNode } from './services/dynamoDbOperations';
 
 // MerkleTree class to represent a binary Merkle tree
 export class MerkleTree {
     root: TreeNode | null;
 
     constructor(leaves: string[]) {
+        this.root = null;
+
         // Delete all the previous items stored in DynamoDB from previously created trees
         // Note that this might not be scalable if tree sizes are very large
         // For those scenarios, other strategies are discussed in README file under Architecture section
         deleteAllItems().subscribe({
-            next: () => {
-                // The first leaf node index in a complete binary tree
+            complete: () => {
+                // The first leaf node index in a perfect binary tree
                 // will be at the position where the last level starts.
-                // For 'n' leaves, it starts at 2^(depth-1) - 1, where depth = log2(n) rounded up
-                const depth = Math.ceil(Math.log2(leaves.length + 1));
-                const firstLeafIndex = Math.pow(2, depth - 1) - 1;
-                const leafNodes = leaves.map((data, index) => 
-                new TreeNode(null, null, data, firstLeafIndex + index));
+                // For 'd' depth, it starts at 2^(d) - 1, where depth = log2(n) rounded up
+                const depth = Math.ceil(Math.log2(leaves.length));
+                console.log('Tree depth is:',depth);
+
+                const firstLeafIndex = Math.pow(2, depth) - 1;
+                console.log('First leaf index is:',firstLeafIndex);
+
+                const lastLevelNodesCount = Math.pow(2,depth);
+                console.log('Number of nodes in last level after filling with empty leaves (if required):',lastLevelNodesCount);
+
+                const treeLeafNodes: TreeNode[] = [];
+
+                // Fill the last level with empty data leaves to create a perfect binary tree
+                for(let i=0; i<lastLevelNodesCount; i++)
+                {
+                    if(i<leaves.length)
+                    {
+                        treeLeafNodes.push(new TreeNode(null,null,leaves[i],firstLeafIndex+i));
+                    }
+                    else
+                    {
+                        treeLeafNodes.push(new TreeNode(null,null,'',firstLeafIndex+i));
+                    }
+                    
+                }
 
                 // Save all leaf nodes to DynamoDB
-                leafNodes.forEach(leaf => saveNode(leaf.toDynamoNode()).subscribe({
-                    error: (err) => console.error('Error saving leaf node:', err)
-                }));
-                this.root = this.buildTree(leafNodes);
+                treeLeafNodes.forEach(leaf => {
+                    saveNode(leaf.toDynamoNode()).subscribe({
+                        error: (err) => console.error(`Error saving leaf node: index=${leaf.index}, error=${err}`)
+                    });
+                });
+                this.root = this.buildTree(treeLeafNodes);
             },
             error: (err) => console.error('Error deleting previous items:', err)
         });
@@ -43,18 +67,15 @@ export class MerkleTree {
         const parentNodes = [];
         for (let i = 0; i < nodes.length; i += 2) {
             const left = nodes[i];
-            const right = i + 1 < nodes.length ? nodes[i + 1] : null;
+            const right = nodes[i + 1];
 
             // Calculate parent node's index
+            // Note that we are only dealing with balanced tree,
+            // since we have duplicated the last leaf if odd number of leaves
             const parentNodeIndex = Math.floor((left.index - 1) / 2);
+
             const parentNode = new TreeNode(left, right, '', parentNodeIndex);
 
-            if (left) {
-                left.index = 2 * parentNodeIndex + 1;
-            }
-            if (right) {
-                right.index = 2 * parentNodeIndex + 2;
-            }
             // Logic to update the hash...
             const leftHashObservable = left.hash.asObservable();
             const rightHashObservable = right ? right.hash.asObservable() : from([null]);

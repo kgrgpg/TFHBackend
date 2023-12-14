@@ -3,7 +3,7 @@ import { tap } from 'rxjs/operators';
 import { getNode } from "./services/dynamoDbOperations";
 
 // Example usage
-const leaves = ['data1', 'data2'];
+const leaves = ['first', 'data2', '45', 'dfdf', 'last', 'wfwd','dfwwf','3rf3ef','3fe3d','3e3r4r','98hh'];
 const merkleTree = new MerkleTree(leaves);
 
 // This loads all the nodes from the local memory
