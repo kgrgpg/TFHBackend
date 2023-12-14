@@ -284,7 +284,7 @@ When deciding whether to calculate the depth and offset on the fly or store them
 
 The decision should be based on balancing storage efficiency, computational load, and the specific needs of your application. Performance testing in your specific scenario may also provide insights for the best approach.
 
-## > Since we are calling the same DynamoDB each time we build the tree, should we ensure that the old entries are deleted?
+## Since we are calling the same DynamoDB each time we build the tree, should we ensure that the old entries are deleted?
 
 Yes, ensuring that old entries are deleted or updated appropriately when you rebuild the tree is an important consideration, especially to maintain the integrity and consistency of your data in DynamoDB. Here are a few approaches you can take:
 
@@ -338,3 +338,14 @@ Deciding whether to use a different DynamoDB table or a different partition key 
 - **Simplicity vs. Flexibility**: Multiple tables are simpler in terms of data isolation but less flexible. A single table with different partitions is more flexible but requires more complex query logic.
 
 In summary, whether to use different tables or partition keys, and whether to manage this at the CDK level or the application level, depends on the frequency of rebuilds, the number of tree versions, cost considerations, and how you prefer to manage your infrastructure and application logic.
+
+## Perfect Binary Merkle Tree
+
+This implementation makes use of Perfect Binary Merkle Tree.
+A perfect binary tree is a special type of binary tree in which all the leaf nodes are at the same depth, and all non-leaf nodes have two children. In simple terms, this means that all leaf nodes are at the maximum depth of the tree, and the tree is completely filled with no gaps.
+
+The maximum number of nodes in a perfect binary tree is given by the formula 2^(d+1) – 1, where d is the depth of the tree. This means that a perfect binary tree with a depth of n has 2^n leaf nodes and a total of 2^(n+1) – 1 nodes.
+
+In our implementation, if we are presented with the creation of Binary Merkle Tree with leaf nodes which is less than the number of leaves at the last level, then we populate the level with empty data leaves for simplicity.
+
+This can result in bloating of data entries, so must be reconsidered. One way is to check for odd or even number of nodes at each level, and duplicate the last odd numbered node at any level to make it even numbered length. This will affect the index and offset calculation of each node.
