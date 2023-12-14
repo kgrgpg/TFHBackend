@@ -283,3 +283,58 @@ When deciding whether to calculate the depth and offset on the fly or store them
 - **Calculate on Demand**: If storage optimization is important and depth and offset are not accessed frequently.
 
 The decision should be based on balancing storage efficiency, computational load, and the specific needs of your application. Performance testing in your specific scenario may also provide insights for the best approach.
+
+## > Since we are calling the same DynamoDB each time we build the tree, should we ensure that the old entries are deleted?
+
+Yes, ensuring that old entries are deleted or updated appropriately when you rebuild the tree is an important consideration, especially to maintain the integrity and consistency of your data in DynamoDB. Here are a few approaches you can take:
+
+1. **Overwrite Existing Entries**:
+   - If the structure of your Merkle tree remains consistent (i.e., the indices of the nodes do not change), you can simply overwrite existing entries with new data. This is the simplest approach and works well if you're sure the tree structure won't change.
+
+2. **Delete All Entries Before Rebuilding**:
+   - To start afresh each time you build the tree, you can first delete all existing entries in the DynamoDB table. This can be done by scanning the table to get all items and then deleting them. However, this approach may not be efficient for large tables due to the cost and time associated with scanning and deleting each item.
+
+3. **Versioning or Timestamps**:
+   - Implement a versioning system where each node also stores a version number or timestamp. When you rebuild the tree, increment the version or update the timestamp. This way, you can identify which nodes are outdated. This approach is more complex but allows for more flexible data management.
+
+4. **Use a Different Table or Partition**:
+   - Consider using a different DynamoDB table or a different partition key for each rebuild. This way, each tree is isolated, and you can easily clear out an entire tree without affecting others.
+
+5. **Soft Deletes**:
+   - Implement a "soft delete" mechanism where you mark entries as deleted without actually removing them from the table. Later, you can filter out these marked entries in your application logic.
+
+6. **TTL (Time To Live)**:
+   - DynamoDB supports TTL (Time To Live) settings on items. You can set a TTL value for each item, after which DynamoDB automatically deletes the item. This could be useful if your application logic allows for a delay in the cleanup process.
+
+When choosing a strategy, consider factors like the size of your data, frequency of tree rebuilding, cost implications, and how your application uses the data. Also, always ensure that your approach aligns with best practices for DynamoDB usage to optimize performance and cost.
+
+Deciding whether to use a different DynamoDB table or a different partition key for each rebuild of your Merkle tree, and whether to handle this at the AWS CDK level or the application level, depends on your specific requirements and the architecture of your system. Here are considerations for both approaches:
+
+### Using Different Tables - CDK Level:
+1. **CDK Approach**: 
+   - In this approach, you would define multiple DynamoDB tables in your CDK stack, each intended for a separate version of your Merkle tree.
+   - This method is suitable if you plan to rebuild your trees infrequently and the number of versions is relatively small or manageable.
+   - CDK will handle the infrastructure setup, but your application code must be aware of which table to interact with for each rebuild.
+
+2. **Application-Level Logic**:
+   - Your application must include logic to determine which table to write to or read from. This might involve configuration files, environment variables, or other mechanisms to select the appropriate table.
+
+### Using Different Partition Keys - Application Level:
+1. **Single Table with Multiple Partitions**: 
+   - Here, you use a single DynamoDB table with a composite primary key, where one part of the key is a partition key that changes with each rebuild.
+   - This approach is handled at the application level. Your CDK setup remains the same with a single DynamoDB table.
+
+2. **Partition Key Strategy**:
+   - You could use a version identifier or a timestamp as part of your partition key to segregate different tree builds.
+   - For example, your primary key could be a combination of `treeVersion` (partition key) and `nodeIndex` (sort key).
+
+3. **Flexibility**:
+   - This method offers more flexibility and is suitable for scenarios where trees are rebuilt frequently or the number of versions is dynamic and potentially large.
+   - It keeps the infrastructure simple while providing a straightforward way to isolate and manage different versions of the tree within the same table.
+
+### Choosing the Right Approach:
+- **Scalability and Management**: Consider the scalability of each approach. Multiple tables can become challenging to manage as the number increases, whereas using partition keys in a single table is more scalable but requires careful query design to avoid inefficient scans.
+- **Cost Implications**: Multiple tables might lead to higher costs, especially if they are under-utilized. A single table with multiple partitions can be more cost-effective.
+- **Simplicity vs. Flexibility**: Multiple tables are simpler in terms of data isolation but less flexible. A single table with different partitions is more flexible but requires more complex query logic.
+
+In summary, whether to use different tables or partition keys, and whether to manage this at the CDK level or the application level, depends on the frequency of rebuilds, the number of tree versions, cost considerations, and how you prefer to manage your infrastructure and application logic.
